@@ -1,0 +1,60 @@
+plugins {
+	id 'org.springframework.boot' version '2.3.2.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id 'war'
+}
+
+group = 'com.hemmels'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	// Spring boot
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	// Spring 5 non-blocking web client
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation('io.projectreactor:reactor-test')
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testImplementation 'org.springframework.amqp:spring-rabbit-test'
+	// https://mvnrepository.com/artifact/com.h2database/h2
+	testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'
+
+	// Used for @Data
+	compileOnly 'org.projectlombok:lombok'
+	// Lightweight REST
+	implementation "com.sparkjava:spark-core:2.9.1"
+	// https://mvnrepository.com/artifact/org.springframework/spring-web-reactive
+	compile group: 'org.springframework', name: 'spring-web-reactive', version: '5.0.0.M4'
+	// https://mvnrepository.com/artifact/org.jboss.weld.servlet/weld-servlet-shaded
+	providedCompile group: 'org.jboss.weld.servlet', name: 'weld-servlet-shaded', version: '3.1.4.Final'
+	// https://mvnrepository.com/artifact/org.mock-server/mockserver-junit-jupiter
+	testCompile group: 'org.mock-server', name: 'mockserver-junit-jupiter', version: '5.11.1'
+	
+}
+
+bootRun {
+    String activeProfile =  System.properties['spring.profiles.active']
+    systemProperty "spring.profiles.active", activeProfile
+}
+
+test {
+	useJUnitPlatform()
+}
