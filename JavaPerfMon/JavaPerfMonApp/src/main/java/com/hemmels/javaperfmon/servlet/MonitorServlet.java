@@ -20,7 +20,7 @@ public class MonitorServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		response.setContentType("application/html; charset=UTF-8");
-		
+
 		MonitorBean monitorBean = new MonitorBean();
 		monitorBean.setTest("Hello world");
 		request.setAttribute("bean", monitorBean);
