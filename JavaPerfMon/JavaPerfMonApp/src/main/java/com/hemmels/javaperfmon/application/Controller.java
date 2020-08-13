@@ -34,23 +34,10 @@ public class Controller {
 		log.info("Inited a DatabaseService; is ds set? {}", ds != null);
 	}
 
-	@RequestMapping("/api")
-	public String hello()
-	{
-		return "This is the correct site/API, you need to visit /endpoints etc to view the data.";
-	}
-
 	@RequestMapping("/api/endpointNames")
 	public String endpointNames()
 	{
 		List<String> endpointList = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
-		return new Gson().toJson(endpointList);
-	}
-
-	@RequestMapping("/api/endpoints")
-	public String endpoints()
-	{
-		List<Endpoint> endpointList = ds.findAllEndpoints().stream().collect(Collectors.toList());
 		return new Gson().toJson(endpointList);
 	}
 

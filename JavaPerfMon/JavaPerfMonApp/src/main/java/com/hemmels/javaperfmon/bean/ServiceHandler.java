@@ -1,9 +1,12 @@
 package com.hemmels.javaperfmon.bean;
 
+import static org.springframework.util.CollectionUtils.isEmpty;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +23,9 @@ public class ServiceHandler {
 	private static final Integer TIMEOUT = 5000;
 
 	public Map<String, Integer> checkServices(List<String> urls) {
+		if (isEmpty(urls)) {
+			return Collections.emptyMap();
+		}
 		Map<String, Integer> latencies = new HashMap<>(urls.size());
 		for (String url : urls) {
 			latencies.put(url, checkLatency(url));
@@ -27,7 +33,7 @@ public class ServiceHandler {
 		return latencies;
 	}
 
-	public int checkLatency(String url) {
+	private int checkLatency(String url) {
 		int latency = MAX_LATENCY;
 		URLConnection conn = getConnectionForUrl(url);
 		if (conn == null) {
