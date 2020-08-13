@@ -13,7 +13,7 @@ import com.hemmels.javaperfmon.servlet.MonitorServlet;
 
 import lombok.extern.slf4j.Slf4j;
 
-@ComponentScan(basePackages = {"com.hemmels.javaperfmon.application", "com.hemmels.javaperfmon.db"})
+@ComponentScan(basePackages = {"com.hemmels.javaperfmon.application",  "com.hemmels.javaperfmon.bean", "com.hemmels.javaperfmon.db"})
 @EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class})
 @EnableTransactionManagement
 @SpringBootApplication

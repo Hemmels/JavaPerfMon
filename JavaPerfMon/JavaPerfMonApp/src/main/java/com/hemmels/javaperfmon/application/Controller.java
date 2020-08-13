@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
+import com.hemmels.javaperfmon.bean.ServiceHandler;
 import com.hemmels.javaperfmon.db.DBService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,8 @@ public class Controller {
 
 	@Autowired
 	private DBService ds;
+	@Autowired
+	private ServiceHandler serviceHandler;
 
 	@PostConstruct
 	public void init()
@@ -37,10 +40,17 @@ public class Controller {
 		return "This is the correct site/API, you need to visit /endpoints etc to view the data.";
 	}
 
+	@RequestMapping("/api/endpointNames")
+	public String endpointNames()
+	{
+		List<String> endpointList = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
+		return new Gson().toJson(endpointList);
+	}
+
 	@RequestMapping("/api/endpoints")
 	public String endpoints()
 	{
-		List<String> endpointList = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
+		List<Endpoint> endpointList = ds.findAllEndpoints().stream().collect(Collectors.toList());
 		return new Gson().toJson(endpointList);
 	}
 
@@ -49,4 +59,12 @@ public class Controller {
 	{
 		return ds.saveEndpoint(endpoint);
 	}
+
+	@RequestMapping("/api/latencyCheck")
+	public String latencyCheck()
+	{
+		List<String> serviceUrls = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
+		return new Gson().toJson(serviceHandler.checkServices(serviceUrls));
+	}
+
 }
