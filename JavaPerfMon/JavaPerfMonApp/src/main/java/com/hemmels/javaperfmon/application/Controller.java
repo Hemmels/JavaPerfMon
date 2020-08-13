@@ -7,23 +7,23 @@ import javax.annotation.PostConstruct;
 
 import org.jooq.generated.tables.pojos.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hemmels.javaperfmon.bean.DatabaseService;
+import com.google.gson.Gson;
+import com.hemmels.javaperfmon.db.DBService;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Service
 @Slf4j
-public class GreetingController {
+public class Controller {
 
 	@Autowired
-	private DatabaseService ds;
+	private DBService ds;
 
 	@PostConstruct
 	public void init()
@@ -31,15 +31,22 @@ public class GreetingController {
 		log.info("Inited a DatabaseService; is ds set? {}", ds != null);
 	}
 
-	@RequestMapping("/")
+	@RequestMapping("/api")
 	public String hello()
 	{
-		return "Hello World! This is me!";
+		return "This is the correct site/API, you need to visit /endpoints etc to view the data.";
 	}
 
-	@RequestMapping("/endpoints")
+	@RequestMapping("/api/endpoints")
 	public String endpoints()
 	{
-		return ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.joining("<br />"));
+		List<String> endpointList = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
+		return new Gson().toJson(endpointList);
+	}
+
+	@PostMapping("/api/endpoints")
+	public int save(Endpoint endpoint)
+	{
+		return ds.saveEndpoint(endpoint);
 	}
 }

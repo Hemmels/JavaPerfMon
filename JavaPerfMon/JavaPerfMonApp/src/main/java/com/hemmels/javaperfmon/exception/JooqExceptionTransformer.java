@@ -1,3 +1,5 @@
+package com.hemmels.javaperfmon.exception;
+
 import org.jooq.ExecuteContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DefaultExecuteListener;

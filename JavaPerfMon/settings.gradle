@@ -1,3 +1,4 @@
 rootProject.name = 'JavaPerfMon'
 include ':JavaPerfMonApp'
 include ':JavaPerfMonGen'
+//include ':JavaPerfMonReact'

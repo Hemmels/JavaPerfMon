@@ -1,4 +1,4 @@
-package com.hemmels.javaperfmon.bean;
+package com.hemmels.javaperfmon.page;
 
 import lombok.Data;
 

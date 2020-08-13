@@ -49,7 +49,7 @@ jooq {
 			driver = 'com.mysql.cj.jdbc.Driver'
 			url = 'jdbc:mysql://localhost:3306/perfmon?autoReconnect=true&useSSL=false'
 			user = 'newuser'
-			password = 'test123'
+			password = 'test123!'
 			properties {
 				property {
 					key = 'ssl'
