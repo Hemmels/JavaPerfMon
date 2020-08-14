@@ -12,3 +12,8 @@ I've been using "test" and "prod" profiles, these can be on the command above se
 ## What is it?
 Currently serves as the backend for a "Service poller" which can be seen running [on Github Pages](https://hemmels.github.io/reactapp)
 The "test" profile will setup an embedded h2 database with test data. This will actually run against live sites since all we are doing is pinging them.
+
+## How to run?
+Simply navigate to the JavaPerfMonApp subproject dir and execute something like:
+    ..\gradlew.bat bootRun -D org.gradle.java.home=D:\Java\jdk-11.0.1 --args='--spring.profiles.active=test'
+This will have a running back end to which you can connect the React front end.
