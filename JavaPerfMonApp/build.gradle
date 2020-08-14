@@ -24,15 +24,11 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	
 	// Spring boot
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.boot:spring-boot-starter-jooq'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 	
 	// Imports we use in the application codebase
-	// https://mvnrepository.com/artifact/org.jooq/jooq
-	implementation group: 'org.jooq', name: 'jooq', version: '3.13.3'
 	// https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api
 	implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
 	// https://mvnrepository.com/artifact/com.google.code.gson/gson
@@ -77,6 +73,10 @@ eclipse {
 	}
 }
 
-springBoot {
+application {
 	mainClassName = 'com.hemmels.javaperfmon.application.Application'
+}
+
+bootRun {
+	main = 'com.hemmels.javaperfmon.application.Application'
 }

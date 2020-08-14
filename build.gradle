@@ -58,7 +58,6 @@ subprojects {
 		
 		// Used for @Data
 		compileOnly 'org.projectlombok:lombok'
-
 	}
 
 	sourceSets {
@@ -76,6 +75,8 @@ dependencies {
 	api project(':JavaPerfMonGen')
 }
 
-springBoot {
-	mainClassName = 'com.hemmels.javaperfmon.application.Application'
+// Ensures we don't look for a mainclass
+bootJar {
+	dependsOn()
+	enabled = false
 }
