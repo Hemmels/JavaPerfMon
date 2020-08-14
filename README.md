@@ -18,4 +18,4 @@ Simply navigate to the JavaPerfMonApp subproject dir and execute something like:
 
     ..\gradlew.bat bootRun -D org.gradle.java.home=D:\Java\jdk-11.0.1 --args='--spring.profiles.active=test'
     
-This will have a running back end to which you can connect the React front end.
+This will have a running back end to which you can run the [React front end](https://github.com/Hemmels/reactapp) against.
