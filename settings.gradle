@@ -1,0 +1,5 @@
+rootProject.name = 'JavaPerfMon'
+include ':JavaPerfMonApp'
+include ':JavaPerfMonGen'
+include ':JavaPerfMonReact'
+project(':JavaPerfMonReact').projectDir = new File(settingsDir, '../JavaPerfMonReact')
