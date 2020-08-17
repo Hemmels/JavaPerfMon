@@ -68,8 +68,8 @@ class ControllerTest {
 	private List<Endpoint> makeEndpointList()
 	{
 		List<Endpoint> list = new ArrayList<>();
-		list.add(new Endpoint(1, SITE_NAME_1, true, LocalDateTime.now().minusMonths(3).minusDays(2)));
-		list.add(new Endpoint(2, SITE_NAME_2, false, LocalDateTime.now().minusMinutes(15)));
+		list.add(new Endpoint(1, SITE_NAME_1, true, 0, LocalDateTime.now().minusMonths(3).minusDays(2)));
+		list.add(new Endpoint(2, SITE_NAME_2, false, 0, LocalDateTime.now().minusMinutes(15)));
 		return list;
 	}
 

@@ -1,5 +1,5 @@
 plugins {
-	id 'java'
+	id 'java-library'
 	id 'eclipse'
 	id 'nu.studer.jooq'
 }
@@ -92,4 +92,9 @@ jooq {
 // Ensures we don't look for a mainclass
 bootJar {
 	enabled = false
+}
+
+// Ensures we overwrite existing db gen files
+generatePerfmonJooqSchemaSource {
+	outputs.upToDateWhen { false }
 }

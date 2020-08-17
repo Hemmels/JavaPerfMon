@@ -1,6 +1,13 @@
 package com.hemmels.javaperfmon.application;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -28,10 +35,28 @@ public class Controller {
 	@Autowired
 	private ServiceHandler serviceHandler;
 
+	// Handle a midnight reset action
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private final Runnable midnightCountReset = createMidnightCountReset();
+
 	@PostConstruct
 	public void init()
 	{
-		log.info("Inited a DatabaseService; is ds set? {}", ds != null);
+		long nextMidnight = Instant.now().plus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS).toEpochMilli();
+		long delayUntilStart = nextMidnight - Instant.now().toEpochMilli();
+		scheduler.scheduleAtFixedRate(midnightCountReset, delayUntilStart, (long) 1, TimeUnit.MILLISECONDS);
+		log.info("Inited a DatabaseService; setup a midnight reset; is ds set? {}", ds != null);
+	}
+
+	private Runnable createMidnightCountReset()
+	{
+		return new Runnable() {
+			@Override
+			public void run()
+			{
+				ds.resetLowCounts();
+			}
+		};
 	}
 
 	@RequestMapping("/api/endpointNames")
@@ -51,7 +76,11 @@ public class Controller {
 	public String latencyCheck()
 	{
 		List<String> serviceUrls = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
-		return new Gson().toJson(serviceHandler.checkServices(serviceUrls));
+		Map<String, Integer> latencyMap = serviceHandler.checkServices(serviceUrls);
+		List<Entry<String, Integer>> topLatencies = latencyMap.entrySet().stream().filter(x -> x.getValue() >= ServiceHandler.MAX_LATENCY)
+				.collect(Collectors.toList());
+		ds.incrementBadPings(topLatencies);
+		return new Gson().toJson(latencyMap);
 	}
 
 }

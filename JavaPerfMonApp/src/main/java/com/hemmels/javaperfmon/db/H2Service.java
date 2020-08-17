@@ -1,6 +1,7 @@
 package com.hemmels.javaperfmon.db;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
@@ -21,22 +22,31 @@ public class H2Service implements DBService {
 	@Autowired
 	private JdbcTemplate jdbc;
 
+	@Override
 	public List<Endpoint> findAllEndpoints()
 	{
 		String sql = "SELECT * FROM endpoint";
 		return jdbc.query(sql, new BeanPropertyRowMapper<>(Endpoint.class));
 	}
 
+	@Override
 	public Endpoint findEndpointById(int id)
 	{
 		String sql = "SELECT * FROM endpoint WHERE id = ?";
 		return jdbc.queryForObject(sql, new Object[]{id}, Endpoint.class);
 	}
 
-	public Endpoint findEndpointByName(String name)
+	@Override
+	public void incrementBadPings(List<Entry<String, Integer>> badPings)
 	{
-		String sql = "SELECT * FROM endpoint WHERE name = ?";
-		return jdbc.queryForObject(sql, new Object[]{name}, Endpoint.class);
+		for (Entry<String, Integer> entry : badPings) {
+			jdbc.update("UPDATE endpoint SET today_low_count = today_low_count + 1 WHERE site = ?", entry.getKey());
+		}
+	}
+	
+	@Override
+	public void resetLowCounts() {
+		jdbc.update("UPDATE endpoint SET today_low_count = 0");
 	}
 
 	@PostConstruct
