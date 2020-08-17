@@ -69,7 +69,7 @@ jooq {
 				name = 'org.jooq.meta.mysql.MySQLDatabase'
 				inputSchema = 'perfmon'
 				// INCLUDES here
-				includes = 'endpoint'
+				includes = 'down_log|endpoint|bad_sites'
 				outputSchemaToDefault = true
 			}
 			generate {

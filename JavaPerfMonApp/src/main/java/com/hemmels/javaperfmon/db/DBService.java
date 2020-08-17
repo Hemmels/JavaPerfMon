@@ -7,7 +7,7 @@ import org.jooq.generated.tables.pojos.Endpoint;
 
 public interface DBService {
 
-	public List<Endpoint> findAllEndpoints();
+	public List<Endpoint> findAllEndpoints(Boolean enabled);
 
 	public Endpoint findEndpointById(int id);
 

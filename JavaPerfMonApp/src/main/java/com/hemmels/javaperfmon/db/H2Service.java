@@ -23,9 +23,12 @@ public class H2Service implements DBService {
 	private JdbcTemplate jdbc;
 
 	@Override
-	public List<Endpoint> findAllEndpoints()
+	public List<Endpoint> findAllEndpoints(Boolean enabled)
 	{
 		String sql = "SELECT * FROM endpoint";
+		if (enabled != null) {
+			sql += "where enabled = " + (enabled == true ? 1 : 0);
+		}
 		return jdbc.query(sql, new BeanPropertyRowMapper<>(Endpoint.class));
 	}
 

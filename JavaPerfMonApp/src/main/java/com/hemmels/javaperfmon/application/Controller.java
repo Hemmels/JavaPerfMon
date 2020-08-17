@@ -49,22 +49,10 @@ public class Controller {
 		log.info("Inited a DatabaseService; setup a midnight reset; is ds set? {}", ds != null);
 	}
 
-	private Runnable createMidnightCountReset()
-	{
-		return new Runnable() {
-			@Override
-			public void run()
-			{
-				ds.resetLowCounts();
-				log.info("Midnight! Reset all low counts to 0.");
-			}
-		};
-	}
-
 	@RequestMapping("/api/endpointNames")
 	public String endpointNames()
 	{
-		List<String> endpointList = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
+		List<String> endpointList = ds.findAllEndpoints(null).stream().map(Endpoint::getSite).collect(Collectors.toList());
 		return new Gson().toJson(endpointList);
 	}
 
@@ -79,12 +67,28 @@ public class Controller {
 	@RequestMapping("/api/latencyCheck")
 	public String latencyCheck()
 	{
-		List<String> serviceUrls = ds.findAllEndpoints().stream().map(Endpoint::getSite).collect(Collectors.toList());
+		List<String> serviceUrls = ds.findAllEndpoints(true).stream().map(Endpoint::getSite).collect(Collectors.toList());
+		List<String> disabledUrls = ds.findAllEndpoints(false).stream().map(Endpoint::getSite).collect(Collectors.toList());
 		Map<String, Integer> latencyMap = serviceHandler.checkServices(serviceUrls);
 		List<Entry<String, Integer>> topLatencies = latencyMap.entrySet().stream().filter(x -> x.getValue() >= ServiceHandler.MAX_LATENCY)
 				.collect(Collectors.toList());
 		ds.incrementBadPings(topLatencies);
+		for (String disabledService : disabledUrls) {
+			latencyMap.put(disabledService, 999);
+		}
 		return new Gson().toJson(latencyMap);
+	}
+
+	private Runnable createMidnightCountReset()
+	{
+		return new Runnable() {
+			@Override
+			public void run()
+			{
+				ds.resetLowCounts();
+				log.info("Midnight! Reset all low counts to 0.");
+			}
+		};
 	}
 
 }

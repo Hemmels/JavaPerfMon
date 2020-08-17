@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ServiceHandler {
 
-	public static final Integer MAX_LATENCY = 499;
+	public static final Integer MAX_LATENCY = 300;
 	private static final Integer TIMEOUT = 5000;
 
 	public Map<String, Integer> checkServices(List<String> urls) {

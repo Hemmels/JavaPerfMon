@@ -1,12 +1,13 @@
 package com.hemmels.javaperfmon.db;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
 import org.jooq.DSLContext;
-import org.jooq.TableField;
+import org.jooq.SelectWhereStep;
 import org.jooq.generated.Tables;
 import org.jooq.generated.tables.daos.EndpointDao;
 import org.jooq.generated.tables.pojos.Endpoint;
@@ -29,9 +30,13 @@ public class JooqService implements CommandLineRunner, DBService {
 	private DSLContext dsl;
 
 	@Override
-	public List<Endpoint> findAllEndpoints()
+	public List<Endpoint> findAllEndpoints(Boolean enabled)
 	{
-		return dsl.selectFrom(Tables.ENDPOINT).fetchInto(Endpoint.class);
+		SelectWhereStep<EndpointRecord> selectQuery = dsl.selectFrom(Tables.ENDPOINT);
+		if (enabled != null) {
+			selectQuery = (SelectWhereStep<EndpointRecord>) selectQuery.where(Tables.ENDPOINT.ENABLED.eq(enabled));
+		}
+		return selectQuery.fetchInto(Endpoint.class);
 	}
 
 	@Override
@@ -44,8 +49,11 @@ public class JooqService implements CommandLineRunner, DBService {
 	public void incrementBadPings(List<Entry<String, Integer>> badPings)
 	{
 		for (Entry<String, Integer> entry : badPings) {
-			TableField<EndpointRecord, Integer> todayLow = Tables.ENDPOINT.TODAY_LOW_COUNT;
-			dsl.update(Tables.ENDPOINT).set(todayLow, todayLow.plus(1)).where(Tables.ENDPOINT.SITE.eq(entry.getKey()));
+			dsl.update(Tables.ENDPOINT).set(Tables.ENDPOINT.TODAY_LOW_COUNT, 0).set(Tables.ENDPOINT.ENABLED, false)
+					.where(Tables.ENDPOINT.SITE.eq(entry.getKey())).execute();
+			dsl.insertInto(Tables.DOWN_LOG).columns(Tables.DOWN_LOG.SITE, Tables.DOWN_LOG.DOWNSTAMP).values(entry.getKey(),
+					LocalDateTime.now()).execute();
+			log.debug("{} was found bad, disabling and logging", entry.getKey());
 		}
 	}
 
@@ -69,9 +77,10 @@ public class JooqService implements CommandLineRunner, DBService {
 		record.insert();
 		return record.getId();
 	}
-	
+
 	@Override
-	public void resetLowCounts() {
+	public void resetLowCounts()
+	{
 		dsl.update(Tables.ENDPOINT).set(Tables.ENDPOINT.TODAY_LOW_COUNT, 0);
 	}
 }

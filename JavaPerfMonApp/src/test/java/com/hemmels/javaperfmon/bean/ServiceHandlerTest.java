@@ -2,7 +2,6 @@ package com.hemmels.javaperfmon.bean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Collections;
 import java.util.Map;
@@ -21,7 +20,7 @@ class ServiceHandlerTest {
 		final String TEST_SITE = "www.google.co.uk";
 		Condition<String> isTestSite = new Condition<>(x -> x.equals(TEST_SITE), "isTestSite");
 		Condition<Integer> isUnder5s = new Condition<>(x -> x > 0 && x < 499, "isUnder5s");
-		
+
 		assertEquals(Collections.EMPTY_MAP, serviceHandler.checkServices(null));
 		assertEquals(Collections.EMPTY_MAP, serviceHandler.checkServices(Collections.emptyList()));
 		Map<String, Integer> map = serviceHandler.checkServices(Collections.singletonList(TEST_SITE));

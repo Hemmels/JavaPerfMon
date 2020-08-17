@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +44,7 @@ class ControllerTest {
 	@BeforeEach
 	void init()
 	{
-		when(ds.findAllEndpoints()).thenReturn(makeEndpointList());
+		when(ds.findAllEndpoints(true)).thenReturn(makeEndpointList(true));
 		when(serviceHandler.checkServices(anyList())).thenReturn(Collections.singletonMap("key", 42));
 	}
 
@@ -65,11 +64,18 @@ class ControllerTest {
 		assertTrue(isJSONValid(result));
 	}
 
-	private List<Endpoint> makeEndpointList()
+	private List<Endpoint> makeEndpointList(Boolean enabled)
 	{
-		List<Endpoint> list = new ArrayList<>();
-		list.add(new Endpoint(1, SITE_NAME_1, true, 0, LocalDateTime.now().minusMonths(3).minusDays(2)));
-		list.add(new Endpoint(2, SITE_NAME_2, false, 0, LocalDateTime.now().minusMinutes(15)));
+		List<Endpoint> list = List.of(new Endpoint(1, SITE_NAME_1, true, 0, LocalDateTime.now().minusMonths(3).minusDays(2)),
+				new Endpoint(2, SITE_NAME_2, false, 0, LocalDateTime.now().minusMinutes(15)));
+
+		if (enabled != null) {
+			if (enabled) {
+				list.remove(1);
+			} else {
+				list.remove(0);
+			}
+		}
 		return list;
 	}
 
