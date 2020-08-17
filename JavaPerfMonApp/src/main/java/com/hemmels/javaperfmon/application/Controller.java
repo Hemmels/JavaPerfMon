@@ -16,6 +16,7 @@ import org.jooq.generated.tables.pojos.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -55,6 +56,7 @@ public class Controller {
 			public void run()
 			{
 				ds.resetLowCounts();
+				log.info("Midnight! Reset all low counts to 0.");
 			}
 		};
 	}
@@ -66,9 +68,11 @@ public class Controller {
 		return new Gson().toJson(endpointList);
 	}
 
-	@PostMapping("/api/endpoints")
-	public int save(Endpoint endpoint)
+	@PostMapping("/api/addendpoint")
+	public int save(@RequestBody String endpointUrl)
 	{
+		Endpoint endpoint = new Endpoint();
+		endpoint.setSite(endpointUrl);
 		return ds.saveEndpoint(endpoint);
 	}
 
