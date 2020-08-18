@@ -14,6 +14,12 @@ Currently serves as the backend for a "Service poller" which can be seen running
 The "test" profile will setup an embedded h2 database with test data. This will actually run against live sites since all we are doing is pinging them.
 More information on the whole project can be found on the (admittedly poorly named) [frontend project](https://github.com/Hemmels/reactapp)
 
+## Features
+* Showcases a gradle build and folder structure of 2 projects, 1 for the application logic, and one for Jooq generated classes.
+* SpringBoot application and Junit 5 tests.
+* Embedded H2 database for testing
+* test and prod Spring prodiles for H2/Mysql reads on application run
+
 ## How to run?
 Simply navigate to the JavaPerfMonApp subproject dir and execute something like:
 
