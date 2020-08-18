@@ -12,7 +12,7 @@ I've been using "test" and "prod" profiles, these can be on the command above se
 ## What is it?
 Currently serves as the backend for a "Service poller" which can be seen running [on Github Pages](https://hemmels.github.io/reactapp) N.B. Doesn't show anything until I implement the database reads in Javascript.
 The "test" profile will setup an embedded h2 database with test data. This will actually run against live sites since all we are doing is pinging them.
-More information on the whole project can be found on the (admittedly poorly named) [frontend project](https://github.com/Hemmels/reactapp)
+More information on the whole project can be found on the (admittedly poorly named) [react frontend project](https://github.com/Hemmels/reactapp)
 
 ## Features
 * Showcases a gradle build and folder structure of 2 projects, 1 for the application logic, and one for Jooq generated classes.
