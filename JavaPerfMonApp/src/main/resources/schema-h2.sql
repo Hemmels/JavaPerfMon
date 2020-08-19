@@ -8,16 +8,15 @@ CREATE TABLE IF NOT EXISTS endpoint (
   UNIQUE KEY id_UNIQUE (id)
 );
 
-# TODO these are untested
+-- TODO these are untested
 CREATE TABLE IF NOT EXISTS down_log (
   site varchar(45) NOT NULL,
   downstamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (site),
-  UNIQUE KEY site_UNIQUE (site),
   CONSTRAINT fk_down_log_name FOREIGN KEY (site) REFERENCES endpoint (site) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE VIEW BAD_SITES AS SELECT 
+CREATE VIEW IF NOT EXISTS BAD_SITES AS SELECT 
     endpoint.id AS id,
     endpoint.site AS site,
     endpoint.enabled AS enabled,

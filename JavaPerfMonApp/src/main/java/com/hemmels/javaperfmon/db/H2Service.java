@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 
+import org.jooq.generated.Tables;
 import org.jooq.generated.tables.pojos.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -27,7 +28,7 @@ public class H2Service implements DBService {
 	{
 		String sql = "SELECT * FROM endpoint";
 		if (enabled != null) {
-			sql += "where enabled = " + (enabled == true ? 1 : 0);
+			sql += " where enabled = " + (enabled == true ? 1 : 0);
 		}
 		return jdbc.query(sql, new BeanPropertyRowMapper<>(Endpoint.class));
 	}
@@ -46,9 +47,10 @@ public class H2Service implements DBService {
 			jdbc.update("UPDATE endpoint SET today_low_count = today_low_count + 1 WHERE site = ?", entry.getKey());
 		}
 	}
-	
+
 	@Override
-	public void resetLowCounts() {
+	public void resetLowCounts()
+	{
 		jdbc.update("UPDATE endpoint SET today_low_count = 0");
 	}
 
@@ -63,6 +65,20 @@ public class H2Service implements DBService {
 	{
 		jdbc.update("INSERT INTO endpoint (site) VALUES (?)", endpoint.getSite());
 		// TODO: Return new id
+		return 1;
+	}
+
+	@Override
+	public void enableAllEndpoints(boolean flag)
+	{
+		jdbc.update("UPDATE endpoint SET enabled = ?", (flag ? 1 : 0));
+	}
+
+	@Override
+	public int removeEndpoint(String endpointUrl)
+	{
+		jdbc.update("DELETE FROM endpoint WHERE site = ?", endpointUrl);
+		// TODO: Return something
 		return 1;
 	}
 }

@@ -15,9 +15,11 @@ import javax.annotation.PostConstruct;
 import org.jooq.generated.tables.pojos.Endpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
@@ -56,12 +58,24 @@ public class Controller {
 		return new Gson().toJson(endpointList);
 	}
 
-	@PostMapping("/api/addendpoint")
-	public int save(@RequestBody String endpointUrl)
+	@PostMapping(value="/api/endpoint/add", consumes="text/plain")
+	public int addEndpoint(@RequestBody String endpointUrl)
 	{
 		Endpoint endpoint = new Endpoint();
 		endpoint.setSite(endpointUrl);
 		return ds.saveEndpoint(endpoint);
+	}
+
+	@GetMapping(value="/api/endpoint/remove")
+	public int removeEndpoint(@RequestParam String url)
+	{
+		return ds.removeEndpoint(url);
+	}
+
+	@PostMapping(value="/api/endpoint/enableall", consumes="text/plain")
+	public void enableAll(@RequestBody String flag)
+	{
+		ds.enableAllEndpoints(Boolean.valueOf(flag));
 	}
 
 	@RequestMapping("/api/latencyCheck")
@@ -70,7 +84,8 @@ public class Controller {
 		List<String> serviceUrls = ds.findAllEndpoints(true).stream().map(Endpoint::getSite).collect(Collectors.toList());
 		List<String> disabledUrls = ds.findAllEndpoints(false).stream().map(Endpoint::getSite).collect(Collectors.toList());
 		Map<String, Integer> latencyMap = serviceHandler.checkServices(serviceUrls);
-		List<Entry<String, Integer>> topLatencies = latencyMap.entrySet().stream().filter(x -> x.getValue() >= ServiceHandler.MAX_LATENCY)
+		List<Entry<String, Integer>> topLatencies = latencyMap.entrySet().stream()
+				.filter(x -> x.getValue() >= ServiceHandler.MAX_LATENCY)
 				.collect(Collectors.toList());
 		ds.incrementBadPings(topLatencies);
 		for (String disabledService : disabledUrls) {

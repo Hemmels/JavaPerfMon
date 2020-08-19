@@ -4,6 +4,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
@@ -19,12 +20,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ServiceHandler {
 
-	public static final Integer MAX_LATENCY = 300;
+	// Advised to change the value to match frontend Status.js too.
+	public static final Integer MAX_LATENCY = 500;
 	private static final Integer TIMEOUT = 5000;
 
 	public Map<String, Integer> checkServices(List<String> urls) {
 		if (isEmpty(urls)) {
-			return Collections.emptyMap();
+			return new HashMap<>(0);
 		}
 		Map<String, Integer> latencies = new HashMap<>(urls.size());
 		for (String url : urls) {
@@ -45,7 +47,9 @@ public class ServiceHandler {
 		try (InputStream in = conn.getInputStream()) {
 			// This cast is safe, because of the timeouts above.
 			latency = (int) (System.currentTimeMillis() - startTime);
-		} catch (IOException e) {
+		} catch (SocketTimeoutException e) {
+			log.error("{} thrown, {} is likely non responsive", e.getClass().getName(), url, e);
+		}catch (IOException e) {
 			log.error("{} thrown checking latency of {}", e.getClass().getName(), url, e);
 		}
 

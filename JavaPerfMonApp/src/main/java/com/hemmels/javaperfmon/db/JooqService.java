@@ -81,6 +81,20 @@ public class JooqService implements CommandLineRunner, DBService {
 	@Override
 	public void resetLowCounts()
 	{
-		dsl.update(Tables.ENDPOINT).set(Tables.ENDPOINT.TODAY_LOW_COUNT, 0);
+		dsl.update(Tables.ENDPOINT).set(Tables.ENDPOINT.TODAY_LOW_COUNT, 0).execute();
 	}
+	
+	@Override
+	public void enableAllEndpoints(boolean flag)
+	{
+		dsl.update(Tables.ENDPOINT).set(Tables.ENDPOINT.ENABLED, flag).execute();
+	}
+
+	@Override
+	public int removeEndpoint(String endpointUrl)
+	{
+		// TODO Auto-generated method stub
+		return dsl.deleteFrom(Tables.ENDPOINT).where(Tables.ENDPOINT.SITE.eq(endpointUrl)).execute();
+	}
+	
 }

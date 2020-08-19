@@ -16,4 +16,8 @@ public interface DBService {
 	public void incrementBadPings(List<Entry<String, Integer>> topLatencies);
 
 	public void resetLowCounts();
+
+	public void enableAllEndpoints(boolean enabledFlag);
+
+	public int removeEndpoint(String endpointUrl);
 }
